@@ -5,14 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Graph Editor</title>
   <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+    #toolbar {
+      background: #f0f0f0;
+      padding: 10px;
+      text-align: center;
+    }
     canvas {
       border: 1px solid black;
       display: block;
       margin: 0 auto;
     }
+    .mode-button {
+      padding: 5px 10px;
+      margin: 0 5px;
+    }
   </style>
 </head>
 <body>
+  <div id="toolbar">
+    <button class="mode-button" onclick="setMode('create')">Create Mode</button>
+    <button class="mode-button" onclick="setMode('delete')">Delete Mode</button>
+  </div>
   <canvas id="graphCanvas" width="800" height="600"></canvas>
 
   <script>
@@ -23,25 +40,37 @@
     let edges = [];
     let draggingNode = null;
     let edgeStartNode = null;
+    let mode = 'create';
+
+    function setMode(newMode) {
+      mode = newMode;
+    }
 
     canvas.addEventListener('mousedown', (e) => {
       const { x, y } = getMousePos(e);
       const node = getNodeAt(x, y);
 
-      if (node) {
-        draggingNode = node;
-      } else {
-        // Create a new node
-        const newNode = { x, y, radius: 20 };
-        nodes.push(newNode);
-        draw();
+      if (mode === 'create') {
+        if (node) {
+          draggingNode = node;
+        } else {
+          const newNode = { x, y, radius: 20 };
+          nodes.push(newNode);
+          draw();
+        }
+      } else if (mode === 'delete') {
+        if (node) {
+          nodes = nodes.filter(n => n !== node);
+          edges = edges.filter(e => e.from !== node && e.to !== node);
+          draw();
+        }
       }
     });
 
     canvas.addEventListener('mouseup', (e) => {
       if (draggingNode) {
         draggingNode = null;
-      } else {
+      } else if (mode === 'create') {
         const { x, y } = getMousePos(e);
         const node = getNodeAt(x, y);
         if (node && edgeStartNode && node !== edgeStartNode) {
@@ -62,10 +91,12 @@
     });
 
     canvas.addEventListener('dblclick', (e) => {
-      const { x, y } = getMousePos(e);
-      const node = getNodeAt(x, y);
-      if (node) {
-        edgeStartNode = node;
+      if (mode === 'create') {
+        const { x, y } = getMousePos(e);
+        const node = getNodeAt(x, y);
+        if (node) {
+          edgeStartNode = node;
+        }
       }
     });
 
@@ -84,7 +115,6 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw edges
       for (let edge of edges) {
         ctx.beginPath();
         ctx.moveTo(edge.from.x, edge.from.y);
@@ -92,7 +122,6 @@
         ctx.stroke();
       }
 
-      // Draw nodes
       for (let node of nodes) {
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
