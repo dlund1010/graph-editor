@@ -75,6 +75,7 @@
         const node = getNodeAt(x, y);
         if (node && edgeStartNode && node !== edgeStartNode) {
           edges.push({ from: edgeStartNode, to: node });
+          draggingNode = null;
         }
         edgeStartNode = null;
       }
