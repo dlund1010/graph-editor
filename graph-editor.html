@@ -74,7 +74,8 @@
         const { x, y } = getMousePos(e);
         const node = getNodeAt(x, y);
         if (node && edgeStartNode && node !== edgeStartNode) {
-          edges.push({ from: edgeStartNode, to: node });
+          if(!isAdjacent(edgeStartNode, node)) 
+            edges.push({ from: edgeStartNode, to: node });
           draggingNode = null;
         }
         edgeStartNode = null;
@@ -109,6 +110,25 @@
         y: evt.clientY - rect.top
       };
     }
+      
+    function isAdjacent(node1, node2) {
+    // Look for edge from node1 to node2
+    let ind1 = edges.findIndex(edge => edge.from === node1 && edge.to === node2);
+    if (ind1 !== -1) {
+        edges.splice(ind1, 1); // remove the edge
+        return true;
+    }
+
+    // Look for edge from node2 to node1
+    let ind2 = edges.findIndex(edge => edge.from === node2 && edge.to === node1);
+    if (ind2 !== -1) {
+        edges.splice(ind2, 1); // remove the edge
+        return true;
+    }
+
+      return false;
+    }
+
 
     function getNodeAt(x, y) {
       return nodes.find(node => Math.hypot(node.x - x, node.y - y) < node.radius);
