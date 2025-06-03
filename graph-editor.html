@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Graph Editor</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="graphCanvas" width="800" height="600"></canvas>
+
+  <script>
+    const canvas = document.getElementById('graphCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let nodes = [];
+    let edges = [];
+    let draggingNode = null;
+    let edgeStartNode = null;
+
+    canvas.addEventListener('mousedown', (e) => {
+      const { x, y } = getMousePos(e);
+      const node = getNodeAt(x, y);
+
+      if (node) {
+        draggingNode = node;
+      } else {
+        // Create a new node
+        const newNode = { x, y, radius: 20 };
+        nodes.push(newNode);
+        draw();
+      }
+    });
+
+    canvas.addEventListener('mouseup', (e) => {
+      if (draggingNode) {
+        draggingNode = null;
+      } else {
+        const { x, y } = getMousePos(e);
+        const node = getNodeAt(x, y);
+        if (node && edgeStartNode && node !== edgeStartNode) {
+          edges.push({ from: edgeStartNode, to: node });
+        }
+        edgeStartNode = null;
+      }
+      draw();
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (draggingNode) {
+        const { x, y } = getMousePos(e);
+        draggingNode.x = x;
+        draggingNode.y = y;
+        draw();
+      }
+    });
+
+    canvas.addEventListener('dblclick', (e) => {
+      const { x, y } = getMousePos(e);
+      const node = getNodeAt(x, y);
+      if (node) {
+        edgeStartNode = node;
+      }
+    });
+
+    function getMousePos(evt) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+      };
+    }
+
+    function getNodeAt(x, y) {
+      return nodes.find(node => Math.hypot(node.x - x, node.y - y) < node.radius);
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw edges
+      for (let edge of edges) {
+        ctx.beginPath();
+        ctx.moveTo(edge.from.x, edge.from.y);
+        ctx.lineTo(edge.to.x, edge.to.y);
+        ctx.stroke();
+      }
+
+      // Draw nodes
+      for (let node of nodes) {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'lightblue';
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+
+    draw();
+  </script>
+</body>
+</html>
