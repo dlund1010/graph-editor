@@ -68,7 +68,7 @@
     });
 
     canvas.addEventListener('mouseup', (e) => {
-      if (draggingNode) {
+      if (draggingNode && edgeStartNode == null) {
         draggingNode = null;
       } else if (mode === 'create') {
         const { x, y } = getMousePos(e);
@@ -119,6 +119,7 @@
         ctx.beginPath();
         ctx.moveTo(edge.from.x, edge.from.y);
         ctx.lineTo(edge.to.x, edge.to.y);
+        ctx.lineWidth = 5;
         ctx.stroke();
       }
 
@@ -127,6 +128,7 @@
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
         ctx.fillStyle = 'lightblue';
         ctx.fill();
+        ctx.lineWidth = 1;
         ctx.stroke();
       }
     }
