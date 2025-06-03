@@ -96,6 +96,7 @@
         const node = getNodeAt(x, y);
         if (node) {
           edgeStartNode = node;
+          draw();
         }
       }
     });
@@ -131,6 +132,16 @@
         ctx.lineWidth = 1;
         ctx.stroke();
       }
+      if (edgeStartNode) {
+        node = edgeStartNode;
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'green';
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+          
     }
 
     draw();
