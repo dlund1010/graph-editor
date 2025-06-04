@@ -29,6 +29,7 @@
   <div id="toolbar">
     <button class="mode-button" onclick="setMode('create')">Create Mode</button>
     <button class="mode-button" onclick="setMode('delete')">Delete Mode</button>
+    <button class="mode-button" onclick="toMathematica()">Export to Mathematica</button>
   </div>
   <canvas id="graphCanvas" width="800" height="600"></canvas>
   <p id="output"></p>
@@ -164,7 +165,7 @@
         ctx.stroke();
       }
       
-      toMathematica();
+      //toMathematica();
     }
     
     function toMathematica() {
