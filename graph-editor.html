@@ -194,18 +194,21 @@
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const radius = 200;
+    let cycleNodes = [];
 
     // Create nodes in a circular layout
     for (let i = 0; i < size; i++) {
       const angle = (2 * Math.PI * i) / size;
       const x = centerX + radius * Math.cos(angle);
       const y = centerY + radius * Math.sin(angle);
-      nodes.push({ x, y, radius: 20 });
+      const node = { x, y, radius: 20 }
+      nodes.push(node);
+      cycleNodes.push(node);
     }
 
     // Create edges to form a cycle
     for (let i = 0; i < size; i++) {
-      edges.push({ from: nodes[i], to: nodes[(i + 1) % size] });
+      edges.push({ from: cycleNodes[i], to: cycleNodes[(i + 1) % size] });
     }
 
     draw();
