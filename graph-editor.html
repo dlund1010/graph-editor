@@ -30,6 +30,8 @@
     <button class="mode-button" onclick="setMode('create')">Create Mode</button>
     <button class="mode-button" onclick="setMode('delete')">Delete Mode</button>
     <button class="mode-button" onclick="toMathematica()">Export to Mathematica</button>
+    <input type="number" id="cycleSize" min="3" placeholder="Cycle size" />
+    <button class="mode-button" onclick="createCycle()">Create Cycle</button>
   </div>
   <canvas id="graphCanvas" width="800" height="600"></canvas>
   <p id="output"></p>
@@ -181,6 +183,34 @@
       edgeString = edgeString.slice(0, -2) + '}]';
       document.getElementById("output").insertAdjacentHTML('beforeend', edgeString);
     }
+    
+    function createCycle() {
+    const size = parseInt(document.getElementById("cycleSize").value);
+    if (isNaN(size) || size < 3) {
+      alert("Please enter a valid cycle size (at least 3).");
+      return;
+    }
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 200;
+
+    // Create nodes in a circular layout
+    for (let i = 0; i < size; i++) {
+      const angle = (2 * Math.PI * i) / size;
+      const x = centerX + radius * Math.cos(angle);
+      const y = centerY + radius * Math.sin(angle);
+      nodes.push({ x, y, radius: 20 });
+    }
+
+    // Create edges to form a cycle
+    for (let i = 0; i < size; i++) {
+      edges.push({ from: nodes[i], to: nodes[(i + 1) % size] });
+    }
+
+    draw();
+  }
+
 
     draw();
   </script>
