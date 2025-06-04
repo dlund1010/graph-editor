@@ -31,6 +31,7 @@
     <button class="mode-button" onclick="setMode('delete')">Delete Mode</button>
   </div>
   <canvas id="graphCanvas" width="800" height="600"></canvas>
+  <p id="output"></p>
 
   <script>
     const canvas = document.getElementById('graphCanvas');
@@ -162,7 +163,22 @@
         ctx.lineWidth = 1;
         ctx.stroke();
       }
-          
+      
+      toMathematica();
+    }
+    
+    function toMathematica() {
+      document.getElementById("output").innerText = "";
+      let edgeString = 'Graph[{';
+      
+      for (let edge of edges) {
+        let fromID = nodes.findIndex(node => node === edge.from);
+        let toID = nodes.findIndex(node => node === edge.to);
+        edgeString += 'UndirectedEdge[' + fromID + ', ' + toID + '], ';
+      }
+      
+      edgeString = edgeString.slice(0, -2) + '}]';
+      document.getElementById("output").insertAdjacentHTML('beforeend', edgeString);
     }
 
     draw();
