@@ -139,6 +139,8 @@
     }
 
     function draw() {
+      spread();
+      
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (let edge of edges) {
@@ -213,8 +215,44 @@
 
     draw();
   }
-
-
+    
+  function spread() {
+    // checks for nodes that are too close together, if found, spreads them apart
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        // calculate distance and angle
+        let distance = Math.sqrt(Math.pow(nodes[i].x - nodes[j].x, 2) + Math.pow(nodes[i].y - nodes[j].y, 2));
+        let slope = Math.abs((nodes[i].y - nodes[j].y) / (nodes[i].x - nodes[j].x));
+        let angle = Math.atan(slope);
+        if (distance < 60) {
+          triggeredSpread = true;
+          let cosValue = Math.cos(angle);
+          let sinValue = Math.sin(angle);
+          let strength = 0.01;
+          
+          // move nodes
+          if (nodes[i].x < nodes[j].x) {
+            nodes[i].x -= (strength * cosValue);
+            nodes[j].x += (strength * cosValue);
+          } else if (nodes[i].x > nodes[j].x) {
+            nodes[i].x += (strength * cosValue);
+            nodes[j].x -= (strength * cosValue);
+          }
+          if (nodes[i].y < nodes[j].y) {
+            nodes[i].y -= (strength * sinValue);
+            nodes[j].y += (strength * sinValue);
+          } else {
+            nodes[i].y += (strength * sinValue);
+            nodes[j].y -= (strength * sinValue);
+          }
+          
+        }
+      }
+    }
+    setTimeout(draw, 5);
+    return triggeredSpread;
+  }
+    
     draw();
   </script>
 </body>
