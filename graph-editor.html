@@ -25,13 +25,15 @@
     }
   </style>
 </head>
-<body>
+<body onload="draw()">
   <div id="toolbar">
     <button class="mode-button" onclick="setMode('create')">Create Mode</button>
     <button class="mode-button" onclick="setMode('delete')">Delete Mode</button>
     <button class="mode-button" onclick="toMathematica()">Export to Mathematica</button>
     <input type="number" id="cycleSize" min="3" placeholder="Cycle size" />
     <button class="mode-button" onclick="createCycle()">Create Cycle</button>
+    <label for="spread-on">Auto Spread:</label>
+    <input id="spread-on" type="checkbox" checked>
   </div>
   <canvas id="graphCanvas" width="800" height="600"></canvas>
   <p id="output"></p>
@@ -60,13 +62,13 @@
         } else {
           const newNode = { x, y, radius: 20 };
           nodes.push(newNode);
-          draw();
+          //draw();
         }
       } else if (mode === 'delete') {
         if (node) {
           nodes = nodes.filter(n => n !== node);
           edges = edges.filter(e => e.from !== node && e.to !== node);
-          draw();
+          //draw();
         }
       }
     });
@@ -84,7 +86,7 @@
         }
         edgeStartNode = null;
       }
-      draw();
+      //draw();
     });
 
     canvas.addEventListener('mousemove', (e) => {
@@ -92,7 +94,7 @@
         const { x, y } = getMousePos(e);
         draggingNode.x = x;
         draggingNode.y = y;
-        draw();
+        //draw();
       }
     });
 
@@ -102,7 +104,7 @@
         const node = getNodeAt(x, y);
         if (node) {
           edgeStartNode = node;
-          draw();
+          //draw();
         }
       }
     });
@@ -139,6 +141,9 @@
     }
 
     function draw() {
+      if (document.getElementById("spread-on").checked)
+        spread();
+      
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (let edge of edges) {
@@ -167,6 +172,7 @@
         ctx.stroke();
       }
       
+      setTimeout(draw,16);
       //toMathematica();
     }
     
@@ -211,11 +217,51 @@
       edges.push({ from: cycleNodes[i], to: cycleNodes[(i + 1) % size] });
     }
 
-    draw();
+    //draw();
   }
-
-
-    draw();
+    
+  function spread() {
+    // checks for nodes that are too close together, if found, spreads them apart 
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        // calculate distance and angle
+        let distance = Math.sqrt(Math.pow(nodes[i].x - nodes[j].x, 2) + Math.pow(nodes[i].y - nodes[j].y, 2));
+        let slope = Math.abs((nodes[i].y - nodes[j].y) / (nodes[i].x - nodes[j].x));
+        let angle = Math.atan(slope);
+        if (distance < 60) {
+          triggeredSpread = true;
+          
+          // move nodes
+          if (draggingNode != nodes[i]) {
+            moveAwayFrom(nodes[i], nodes[j], 0.5); 
+          }
+          if (draggingNode != nodes[j]) {
+            moveAwayFrom(nodes[j], nodes[i], 0.5);
+          }
+          
+        }
+      }
+    }
+  }
+  
+  function moveAwayFrom(node1, node2, strength) {
+    let slope = Math.abs((node1.y - node2.y) / (node1.x - node2.x)); 
+    let angle = Math.atan(slope);
+    let cosValue = Math.cos(angle);
+    let sinValue = Math.sin(angle);
+    if (node1.x < node2.x) {
+      node1.x -= (strength * cosValue);
+    } else if (node1.x > node2.x) {
+      node1.x += (strength * cosValue);
+    }
+    if (node1.y < node2.y) {
+      node1.y -= (strength * sinValue);
+    } else {
+      node1.y += (strength * sinValue);
+    }
+    node1.x = Math.max(0, Math.min(canvas.width, node1.x));
+    node1.y = Math.max(0, Math.min(canvas.height, node1.y));
+  }
   </script>
 </body>
 </html>
