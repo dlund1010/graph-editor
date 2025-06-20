@@ -60,13 +60,13 @@
         } else {
           const newNode = { x, y, radius: 20 };
           nodes.push(newNode);
-          draw();
+          //draw();
         }
       } else if (mode === 'delete') {
         if (node) {
           nodes = nodes.filter(n => n !== node);
           edges = edges.filter(e => e.from !== node && e.to !== node);
-          draw();
+          //draw();
         }
       }
     });
@@ -84,7 +84,7 @@
         }
         edgeStartNode = null;
       }
-      draw();
+      //draw();
     });
 
     canvas.addEventListener('mousemove', (e) => {
@@ -92,7 +92,7 @@
         const { x, y } = getMousePos(e);
         draggingNode.x = x;
         draggingNode.y = y;
-        draw();
+        //draw();
       }
     });
 
@@ -102,7 +102,7 @@
         const node = getNodeAt(x, y);
         if (node) {
           edgeStartNode = node;
-          draw();
+          //draw();
         }
       }
     });
@@ -169,6 +169,7 @@
         ctx.stroke();
       }
       
+      setTimeout(draw,16);
       //toMathematica();
     }
     
@@ -213,11 +214,11 @@
       edges.push({ from: cycleNodes[i], to: cycleNodes[(i + 1) % size] });
     }
 
-    draw();
+    //draw();
   }
     
   function spread() {
-    // checks for nodes that are too close together, if found, spreads them apart
+    // checks for nodes that are too close together, if found, spreads them apart 
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
         // calculate distance and angle
@@ -228,7 +229,7 @@
           triggeredSpread = true;
           let cosValue = Math.cos(angle);
           let sinValue = Math.sin(angle);
-          let strength = 0.01;
+          let strength = 0.25;
           
           // move nodes
           if (nodes[i].x < nodes[j].x) {
@@ -249,8 +250,6 @@
         }
       }
     }
-    setTimeout(draw, 5);
-    return triggeredSpread;
   }
     
     draw();
