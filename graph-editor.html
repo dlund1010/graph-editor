@@ -247,6 +247,13 @@
             nodes[j].y -= (strength * sinValue);
           }
           
+          nodes[i].x = Math.max(0, Math.min(canvas.width, nodes[i].x));
+          nodes[i].y = Math.max(0, Math.min(canvas.height, nodes[i].y));
+          
+          nodes[j].x = Math.max(0, Math.min(canvas.width, nodes[j].x));
+          nodes[j].y = Math.max(0, Math.min(canvas.height, nodes[j].y));
+
+          
         }
       }
     }
