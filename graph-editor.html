@@ -227,38 +227,38 @@
         let angle = Math.atan(slope);
         if (distance < 60) {
           triggeredSpread = true;
-          let cosValue = Math.cos(angle);
-          let sinValue = Math.sin(angle);
-          let strength = 0.25;
           
           // move nodes
-          if (nodes[i].x < nodes[j].x) {
-            nodes[i].x -= (strength * cosValue);
-            nodes[j].x += (strength * cosValue);
-          } else if (nodes[i].x > nodes[j].x) {
-            nodes[i].x += (strength * cosValue);
-            nodes[j].x -= (strength * cosValue);
+          if (draggingNode != nodes[i]) {
+            moveAwayFrom(nodes[i], nodes[j], 0.5); 
           }
-          if (nodes[i].y < nodes[j].y) {
-            nodes[i].y -= (strength * sinValue);
-            nodes[j].y += (strength * sinValue);
-          } else {
-            nodes[i].y += (strength * sinValue);
-            nodes[j].y -= (strength * sinValue);
+          if (draggingNode != nodes[j]) {
+            moveAwayFrom(nodes[j], nodes[i], 0.5);
           }
-          
-          nodes[i].x = Math.max(0, Math.min(canvas.width, nodes[i].x));
-          nodes[i].y = Math.max(0, Math.min(canvas.height, nodes[i].y));
-          
-          nodes[j].x = Math.max(0, Math.min(canvas.width, nodes[j].x));
-          nodes[j].y = Math.max(0, Math.min(canvas.height, nodes[j].y));
-
           
         }
       }
     }
   }
   
+  function moveAwayFrom(node1, node2, strength) {
+    let slope = Math.abs((node1.y - node2.y) / (node1.x - node2.x)); 
+    let angle = Math.atan(slope);
+    let cosValue = Math.cos(angle);
+    let sinValue = Math.sin(angle);
+    if (node1.x < node2.x) {
+      node1.x -= (strength * cosValue);
+    } else if (node1.x > node2.x) {
+      node1.x += (strength * cosValue);
+    }
+    if (node1.y < node2.y) {
+      node1.y -= (strength * sinValue);
+    } else {
+      node1.y += (strength * sinValue);
+    }
+    node1.x = Math.max(0, Math.min(canvas.width, node1.x));
+    node1.y = Math.max(0, Math.min(canvas.height, node1.y));
+  }
   </script>
 </body>
 </html>
