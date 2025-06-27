@@ -189,7 +189,7 @@
       let totalString = '\\begin{tikzpicture} <br>';
       for (let i = 0; i < nodes.length; i++) {
         totalString += '\\node[circle,fill=black,scale=.7] at  (' 
-          + (nodes[i].x / 100) + ', ' + (nodes[i].y / 100) + ') (n' + i + ') {}; <br>';
+          + (nodes[i].x / 100) + ', ' + ((canvas.height - nodes[i].y) / 100) + ') (n' + i + ') {}; <br>';
       }
       for (let edge of edges) {
         let fromID = nodes.findIndex(node => node === edge.from);
