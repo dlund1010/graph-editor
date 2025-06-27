@@ -62,13 +62,11 @@
         } else {
           const newNode = { x, y, radius: 20 };
           nodes.push(newNode);
-          //draw();
         }
       } else if (mode === 'delete') {
         if (node) {
           nodes = nodes.filter(n => n !== node);
           edges = edges.filter(e => e.from !== node && e.to !== node);
-          //draw();
         }
       }
     });
@@ -86,7 +84,6 @@
         }
         edgeStartNode = null;
       }
-      //draw();
     });
 
     canvas.addEventListener('mousemove', (e) => {
@@ -94,7 +91,6 @@
         const { x, y } = getMousePos(e);
         draggingNode.x = x;
         draggingNode.y = y;
-        //draw();
       }
     });
 
@@ -104,7 +100,6 @@
         const node = getNodeAt(x, y);
         if (node) {
           edgeStartNode = node;
-          //draw();
         }
       }
     });
@@ -173,7 +168,6 @@
       }
       
       setTimeout(draw,16);
-      //toMathematica();
     }
     
     function toMathematica() {
@@ -216,8 +210,6 @@
     for (let i = 0; i < size; i++) {
       edges.push({ from: cycleNodes[i], to: cycleNodes[(i + 1) % size] });
     }
-
-    //draw();
   }
     
   function spread() {
@@ -238,7 +230,6 @@
           if (draggingNode != nodes[j]) {
             moveAwayFrom(nodes[j], nodes[i], 0.5);
           }
-          
         }
       }
     }
