@@ -54,7 +54,7 @@
     }
 
     canvas.addEventListener('mousedown', (e) => {
-      let {x, y} = getMousePos(e);
+      const {x, y} = getMousePos(e);
       const node = getNodeAt(x, y);
 
       if (mode === 'create') {
@@ -68,7 +68,6 @@
         if (node) {
           nodes = nodes.filter(n => n !== node);
           edges = edges.filter(e => e.from !== node && e.to !== node);
-          //draw();
         }
       }
     });
@@ -86,7 +85,6 @@
         }
         edgeStartNode = null;
       }
-      //draw();
     });
 
     canvas.addEventListener('mousemove', (e) => {
@@ -94,7 +92,6 @@
         const { x, y } = getMousePos(e);
         draggingNode.x = x;
         draggingNode.y = y;
-        //draw();
       }
     });
 
@@ -104,7 +101,6 @@
         const node = getNodeAt(x, y);
         if (node) {
           edgeStartNode = node;
-          //draw();
         }
       }
     });
@@ -163,14 +159,7 @@
         ctx.stroke();
       }
       if (edgeStartNode) {
-        /*node = edgeStartNode;
-        // line from starting node to mouse
-        ctx.beginPath();
-        ctx.moveTo(node.x, node.y);
-        ctx.lineTo(mousePosition.x, mousePosition.y);
-        ctx.lineWidth = 5;
-        ctx.stroke();*/
-        // drawing starting node green
+        node = edgeStartNode;
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
         ctx.fillStyle = 'green';
@@ -179,7 +168,6 @@
         ctx.stroke();
       }
       setTimeout(draw,16);
-      //toMathematica();
     }
     
     function toMathematica() {
@@ -240,7 +228,6 @@
       edges.push({ from: cycleNodes[i], to: cycleNodes[(i + 1) % size] });
     }
 
-    //draw();
   }
     
   function spread() {
