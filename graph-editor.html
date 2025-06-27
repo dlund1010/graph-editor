@@ -30,7 +30,8 @@
     <button class="mode-button" onclick="setMode('create')">Create Mode</button>
     <button class="mode-button" onclick="setMode('delete')">Delete Mode</button>
     <button class="mode-button" onclick="toMathematica()">Export to Mathematica</button>
-    <input type="text" id="cycleSize" min="3" size="4" placeholder="Size" />
+    <button class="mode-button" onclick="toTikZ()">Export to TikZ</button>
+    <input type="number" id="cycleSize" min="3" placeholder="Cycle size" />
     <button class="mode-button" onclick="createCycle()">Create Cycle</button>
     <label for="spread-on">Auto Spread:</label>
     <input id="spread-on" type="checkbox" checked>
@@ -53,7 +54,7 @@
     }
 
     canvas.addEventListener('mousedown', (e) => {
-      const { x, y } = getMousePos(e);
+      let {x, y} = getMousePos(e);
       const node = getNodeAt(x, y);
 
       if (mode === 'create') {
@@ -67,6 +68,7 @@
         if (node) {
           nodes = nodes.filter(n => n !== node);
           edges = edges.filter(e => e.from !== node && e.to !== node);
+          //draw();
         }
       }
     });
@@ -84,6 +86,7 @@
         }
         edgeStartNode = null;
       }
+      //draw();
     });
 
     canvas.addEventListener('mousemove', (e) => {
@@ -91,6 +94,7 @@
         const { x, y } = getMousePos(e);
         draggingNode.x = x;
         draggingNode.y = y;
+        //draw();
       }
     });
 
@@ -100,6 +104,7 @@
         const node = getNodeAt(x, y);
         if (node) {
           edgeStartNode = node;
+          //draw();
         }
       }
     });
@@ -158,7 +163,14 @@
         ctx.stroke();
       }
       if (edgeStartNode) {
-        node = edgeStartNode;
+        /*node = edgeStartNode;
+        // line from starting node to mouse
+        ctx.beginPath();
+        ctx.moveTo(node.x, node.y);
+        ctx.lineTo(mousePosition.x, mousePosition.y);
+        ctx.lineWidth = 5;
+        ctx.stroke();*/
+        // drawing starting node green
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
         ctx.fillStyle = 'green';
@@ -166,8 +178,8 @@
         ctx.lineWidth = 1;
         ctx.stroke();
       }
-      
       setTimeout(draw,16);
+      //toMathematica();
     }
     
     function toMathematica() {
@@ -182,6 +194,23 @@
       
       edgeString = edgeString.slice(0, -2) + '}]';
       document.getElementById("output").insertAdjacentHTML('beforeend', edgeString);
+    }
+    
+    function toTikZ() {
+      document.getElementById("output").innerText = "";
+      let totalString = '\\begin{tikzpicture} <br>';
+      for (let i = 0; i < nodes.length; i++) {
+        totalString += '\\node[circle,fill=black,scale=.7] at  (' 
+          + (nodes[i].x / 100) + ', ' + (nodes[i].y / 100) + ') (n' + i + ') {}; <br>';
+      }
+      for (let edge of edges) {
+        let fromID = nodes.findIndex(node => node === edge.from);
+        let toID = nodes.findIndex(node => node === edge.to);
+        totalString += '\\draw (n' + fromID + ') -- (n' + toID + '); <br>';
+      }
+      
+      totalString = totalString + '\\end{tikzpicture}';
+      document.getElementById("output").insertAdjacentHTML('beforeend', totalString);
     }
     
     function createCycle() {
@@ -210,6 +239,8 @@
     for (let i = 0; i < size; i++) {
       edges.push({ from: cycleNodes[i], to: cycleNodes[(i + 1) % size] });
     }
+
+    //draw();
   }
     
   function spread() {
@@ -230,6 +261,7 @@
           if (draggingNode != nodes[j]) {
             moveAwayFrom(nodes[j], nodes[i], 0.5);
           }
+          
         }
       }
     }
