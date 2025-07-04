@@ -35,6 +35,8 @@
     <button class="mode-button" onclick="createCycle()">Create Cycle</button>
     <label for="spread-on">Auto Spread:</label>
     <input id="spread-on" type="checkbox" checked>
+    <label for="radia">Node Size:</label>
+    <input type="range" id="radia" value="20" min="10" max="30">
   </div>
   <canvas id="graphCanvas" width="800" height="600"></canvas>
   <p id="output"></p>
@@ -48,6 +50,11 @@
     let draggingNode = null;
     let edgeStartNode = null;
     let mode = 'create';
+    let nodeRadius = 20;
+    
+    function setNodeRadius() {
+      nodeRadius = document.getElementById("radia").value;
+    }
 
     function setMode(newMode) {
       mode = newMode;
@@ -137,6 +144,8 @@
     }
 
     function draw() {
+      setNodeRadius();
+      
       if (document.getElementById("spread-on").checked)
         spread();
       
@@ -152,7 +161,7 @@
 
       for (let node of nodes) {
         ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
         ctx.fillStyle = 'lightblue';
         ctx.fill();
         ctx.lineWidth = 1;
@@ -161,7 +170,7 @@
       if (edgeStartNode) {
         node = edgeStartNode;
         ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
         ctx.fillStyle = 'green';
         ctx.fill();
         ctx.lineWidth = 1;
