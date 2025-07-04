@@ -29,6 +29,7 @@
   <div id="toolbar">
     <button class="mode-button" onclick="setMode('create')">Create Mode</button>
     <button class="mode-button" onclick="setMode('delete')">Delete Mode</button>
+    <button class="mode-button" onclick="setMode('edge')">Edge Mode</button>
     <button class="mode-button" onclick="toMathematica()">Export to Mathematica</button>
     <button class="mode-button" onclick="toTikZ()">Export to TikZ</button>
     <input type="number" id="cycleSize" min="3" placeholder="Cycle size" />
@@ -76,6 +77,14 @@
           nodes = nodes.filter(n => n !== node);
           edges = edges.filter(e => e.from !== node && e.to !== node);
         }
+      } else if (mode === 'edge') {
+        if (node)
+          startEdge(e);
+        else {
+          const newNode = { x, y, radius: 20 };
+          nodes.push(newNode);
+          startEdge(e);
+        }
       }
     });
 
@@ -85,6 +94,19 @@
       } else if (mode === 'create') {
         const { x, y } = getMousePos(e);
         const node = getNodeAt(x, y);
+        if (node && edgeStartNode && node !== edgeStartNode) {
+          if(!isAdjacent(edgeStartNode, node)) 
+            edges.push({ from: edgeStartNode, to: node });
+          draggingNode = null;
+        }
+        edgeStartNode = null;
+      } else if (mode === 'edge') {
+        const { x, y } = getMousePos(e);
+        let node = getNodeAt(x, y);
+        if(!node) {
+          node = { x, y, radius: 20 };
+          nodes.push(node);
+        }
         if (node && edgeStartNode && node !== edgeStartNode) {
           if(!isAdjacent(edgeStartNode, node)) 
             edges.push({ from: edgeStartNode, to: node });
@@ -103,14 +125,18 @@
     });
 
     canvas.addEventListener('dblclick', (e) => {
-      if (mode === 'create') {
-        const { x, y } = getMousePos(e);
+      if (mode === 'create' || mode === 'edge') {
+        startEdge(e);
+      }
+    });
+    
+    function startEdge(e) {
+      const { x, y } = getMousePos(e);
         const node = getNodeAt(x, y);
         if (node) {
           edgeStartNode = node;
         }
-      }
-    });
+    }
 
     function getMousePos(evt) {
       const rect = canvas.getBoundingClientRect();
