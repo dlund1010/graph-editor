@@ -9,7 +9,7 @@
       margin: 0;
       font-family: sans-serif;
     }
-    #toolbar {
+    div {
       background: #f0f0f0;
       padding: 10px;
       text-align: center;
@@ -27,17 +27,20 @@
 </head>
 <body onload="draw()">
   <div id="toolbar">
-    <button class="mode-button" onclick="setMode('create')">Create Mode</button>
-    <button class="mode-button" onclick="setMode('delete')">Delete Mode</button>
-    <button class="mode-button" onclick="setMode('edge')">Edge Mode</button>
+    
     <button class="mode-button" onclick="toMathematica()">Export to Mathematica</button>
     <button class="mode-button" onclick="toTikZ()">Export to TikZ</button>
-    <input type="number" id="cycleSize" min="3" placeholder="Cycle size" />
+    <input type="text" id="cycleSize" min="3" size="4" placeholder="Size" />
     <button class="mode-button" onclick="createCycle()">Create Cycle</button>
     <label for="spread-on">Auto Spread:</label>
     <input id="spread-on" type="checkbox" checked>
     <label for="radia">Node Size:</label>
     <input type="range" id="radia" value="20" min="10" max="30">
+  </div>
+  <div>
+    <button class="mode-button" onclick="setMode('create')">Q-Create Mode</button>
+    <button class="mode-button" onclick="setMode('delete')">W-Delete Mode</button>
+    <button class="mode-button" onclick="setMode('edge')">E-Edge Mode</button>
   </div>
   <canvas id="graphCanvas" width="800" height="600"></canvas>
   <p id="output"></p>
