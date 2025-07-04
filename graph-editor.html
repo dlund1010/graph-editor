@@ -145,6 +145,22 @@
         y: evt.clientY - rect.top
       };
     }
+    
+    addEventListener("keydown", (e) => { 
+      switch (e.key) {
+        case 'q':
+          setMode('create');
+          break;
+        case 'w':
+          setMode('delete');
+          break;
+        case 'e':
+          setMode('edge');
+          break;
+        default:
+          break;
+      }
+    });
       
     function isAdjacent(node1, node2) {
     // Look for edge from node1 to node2
